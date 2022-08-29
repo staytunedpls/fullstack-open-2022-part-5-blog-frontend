@@ -60,34 +60,32 @@ const App = () => {
     }
   };
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault();
     const newBlog = {
       title: title,
       author: author,
       url: url,
     };
-    blogService
-      .add(newBlog)
-      .then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog));
-        setTitle("");
-        setAuthor("");
-        setUrl("");
+    try {
+      const returnedBlog = await blogService.add(newBlog);
+      setBlogs(blogs.concat(returnedBlog));
+      setTitle("");
+      setAuthor("");
+      setUrl("");
 
-        setNotificationMessage(
-          `a new blog ${returnedBlog.title} by ${newBlog.author} added`
-        );
-        setNotificationType("success");
-        setTimeout(() => setNotificationMessage(null), 5000);
-      })
-      .catch((error) => {
-        setNotificationMessage(
-          `Could not add new blog, got error: ${error.message}`
-        );
-        setNotificationType("error");
-        setTimeout(() => setNotificationMessage(null), 5000);
-      });
+      setNotificationMessage(
+        `a new blog ${returnedBlog.title} by ${newBlog.author} added`
+      );
+      setNotificationType("success");
+      setTimeout(() => setNotificationMessage(null), 5000);
+    } catch (error) {
+      setNotificationMessage(
+        `Could not add new blog, got error: ${error.message}`
+      );
+      setNotificationType("error");
+      setTimeout(() => setNotificationMessage(null), 5000);
+    }
   };
 
   const logout = () => {
