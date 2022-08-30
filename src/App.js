@@ -1,7 +1,8 @@
 import "./index.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
+import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -26,6 +27,8 @@ const App = () => {
 
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState("");
+
+  const newBlogRef = useRef();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
@@ -62,6 +65,8 @@ const App = () => {
 
   const addBlog = async (event) => {
     event.preventDefault();
+    newBlogRef.current.toggleVisibility();
+
     const newBlog = {
       title: title,
       author: author,
@@ -131,7 +136,7 @@ const App = () => {
     </div>
   );
 
-  const entryForm = () => (
+  const newBlogForm = () => (
     <div>
       <h2>Create entry</h2>
       <form onSubmit={addBlog}>
@@ -176,7 +181,9 @@ const App = () => {
       <div>
         <Notification message={notificationMessage} type={notificationType} />
         {blogList()}
-        {entryForm()}
+        <Togglable buttonLabel="new blog" ref={newBlogRef}>
+          {newBlogForm()}
+        </Togglable>
       </div>
     );
   }
