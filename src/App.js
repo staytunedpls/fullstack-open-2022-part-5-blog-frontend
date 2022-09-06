@@ -111,15 +111,22 @@ const App = () => {
     </div>
   );
 
+  const removeBlog = async (blog) => {
+    if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)) {
+      console.log("Removing...");
+      await blogService.deleteEntry(blog.id);
+      setBlogs(blogs.filter(blogElement => blogElement.id !== blog.id));
+    }
+  };
+
   const blogList = () => (
     <div>
       <h2>Blogs</h2>
       <p>
         {user.username} logged in<button onClick={logout}>logout</button>
       </p>
-
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} removeBlog={removeBlog} loggedUser={user}/>
       ))}
     </div>
   );

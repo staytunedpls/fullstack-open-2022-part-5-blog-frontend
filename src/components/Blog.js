@@ -1,18 +1,22 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, removeBlog, loggedUser }) => {
   const [detailsVisible, setDetailsVisibility] = useState(false);
-  const [likes, setLikes] = useState(blog.likes)
+  const [likes, setLikes] = useState(blog.likes);
 
   const toggleDetailsVisibility = () => {
     setDetailsVisibility(!detailsVisible);
   };
   const blogStyle = { border: "1px solid", margin: "10px", padding: "5px" };
   const detailsStyle = { display: detailsVisible ? "" : "none" };
+  const removeButtonStyle = {
+    backgroundColor: "#ff9999",
+    display: blog.user.id === loggedUser.id ? "" : "none",
+  };
 
   const likeBlog = async () => {
-    const newBlog = {...blog, likes: likes + 1}
+    const newBlog = { ...blog, likes: likes + 1 };
     const returnedBlog = await blogService.update(blog.id, newBlog);
     setLikes(returnedBlog.likes);
   };
@@ -29,6 +33,10 @@ const Blog = ({ blog }) => {
         likes: {likes} <button onClick={likeBlog}>like</button>
         <br />
         creator: {blog.user.username}
+        <br />
+        <button style={removeButtonStyle} onClick={() => removeBlog(blog)}>
+          remove
+        </button>
       </div>
     </div>
   );
