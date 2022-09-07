@@ -23,12 +23,14 @@ function Blog({ blog, removeBlog, loggedUser }) {
   };
 
   return (
-    <div style={blogStyle}>
-      &quot;{blog.title}&quot; {blog.author}&nbsp;
+    <div className="blog" style={blogStyle}>
+      <span className="blog-header">
+        &quot;{blog.title}&quot; {blog.author}&nbsp;
+      </span>
       <button type="button" onClick={toggleDetailsVisibility}>
         {detailsVisible ? 'hide' : 'view'}
       </button>
-      <div style={detailsStyle}>
+      <div className="blog-details" style={detailsStyle}>
         url: {blog.url}
         <br />
         likes: {likes}{' '}
