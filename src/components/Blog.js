@@ -1,18 +1,19 @@
-import { useState } from "react";
-import blogService from "../services/blogs";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import blogService from '../services/blogs';
 
-const Blog = ({ blog, removeBlog, loggedUser }) => {
+function Blog({ blog, removeBlog, loggedUser }) {
   const [detailsVisible, setDetailsVisibility] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
   const toggleDetailsVisibility = () => {
     setDetailsVisibility(!detailsVisible);
   };
-  const blogStyle = { border: "1px solid", margin: "10px", padding: "5px" };
-  const detailsStyle = { display: detailsVisible ? "" : "none" };
+  const blogStyle = { border: '1px solid', margin: '10px', padding: '5px' };
+  const detailsStyle = { display: detailsVisible ? '' : 'none' };
   const removeButtonStyle = {
-    backgroundColor: "#ff9999",
-    display: blog.user.id === loggedUser.id ? "" : "none",
+    backgroundColor: '#ff9999',
+    display: blog.user.id === loggedUser.id ? '' : 'none',
   };
 
   const likeBlog = async () => {
@@ -23,23 +24,48 @@ const Blog = ({ blog, removeBlog, loggedUser }) => {
 
   return (
     <div style={blogStyle}>
-      "{blog.title}" {blog.author}{" "}
-      <button onClick={toggleDetailsVisibility}>
-        {detailsVisible ? "hide" : "view"}
+      &quot;{blog.title}&quot; {blog.author}&nbsp;
+      <button type="button" onClick={toggleDetailsVisibility}>
+        {detailsVisible ? 'hide' : 'view'}
       </button>
       <div style={detailsStyle}>
         url: {blog.url}
         <br />
-        likes: {likes} <button onClick={likeBlog}>like</button>
+        likes: {likes}{' '}
+        <button type="button" onClick={likeBlog}>
+          like
+        </button>
         <br />
         creator: {blog.user.username}
         <br />
-        <button style={removeButtonStyle} onClick={() => removeBlog(blog)}>
+        <button
+          type="button"
+          style={removeButtonStyle}
+          onClick={() => removeBlog(blog)}
+        >
           remove
         </button>
       </div>
     </div>
   );
+}
+
+Blog.propTypes = {
+  blog: PropTypes.shape({
+    user: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+    }),
+    title: PropTypes.string,
+    author: PropTypes.string,
+    url: PropTypes.string,
+    likes: PropTypes.number,
+    id: PropTypes.string.isRequired,
+  }).isRequired,
+  removeBlog: PropTypes.func.isRequired,
+  loggedUser: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default Blog;

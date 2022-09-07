@@ -1,21 +1,22 @@
-import { useState } from "react";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+function BlogForm({ createBlog }) {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
-  const addBlogEvent = (event) => {
+  const addBlogEvent = event => {
     event.preventDefault();
     const newBlog = {
-      title: title,
-      author: author,
-      url: url,
+      title,
+      author,
+      url,
     };
     createBlog(newBlog);
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   return (
@@ -50,6 +51,10 @@ const BlogForm = ({ createBlog }) => {
       </form>
     </div>
   );
+}
+
+BlogForm.propTypes = {
+  createBlog: PropTypes.func.isRequired,
 };
 
 export default BlogForm;

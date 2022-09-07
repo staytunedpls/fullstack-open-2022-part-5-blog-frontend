@@ -1,9 +1,10 @@
-import axios from "axios";
-const baseUrl = "/api/blogs";
+import axios from 'axios';
+
+const baseUrl = '/api/blogs';
 
 let token = null;
 
-const setToken = (newToken) => {
+const setToken = newToken => {
   token = `bearer ${newToken}`;
 };
 
@@ -12,7 +13,7 @@ const getAll = async () => {
   return response.data.sort((b1, b2) => b2.likes - b1.likes);
 };
 
-const add = async (newBlog) => {
+const add = async newBlog => {
   const response = await axios.post(baseUrl, newBlog, {
     headers: { Authorization: token },
   });
@@ -24,7 +25,7 @@ const update = async (id, updatedBlog) => {
   return response.data;
 };
 
-const deleteEntry = async (id) => {
+const deleteEntry = async id => {
   const response = await axios.delete(`${baseUrl}/${id}`, {
     headers: { Authorization: token },
   });

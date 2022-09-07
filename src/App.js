@@ -1,66 +1,75 @@
-import "./index.css";
+import './index.css';
+import PropTypes from 'prop-types';
 
-import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
-import BlogForm from "./components/BlogForm";
-import Togglable from "./components/Togglable";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+import { useState, useEffect, useRef } from 'react';
+import Blog from './components/Blog';
+import BlogForm from './components/BlogForm';
+import Togglable from './components/Togglable';
+import blogService from './services/blogs';
+import loginService from './services/login';
 
-const Notification = ({ message, type }) => {
-  const notification_class = `notification ${type}`;
+function Notification({ message, type }) {
+  const notificationClass = `notification ${type}`;
   if (message === null) {
     return null;
-  } else {
-    return <div className={notification_class}>{message}</div>;
   }
+  return <div className={notificationClass}>{message}</div>;
+}
+
+Notification.defaultProps = {
+  message: null,
 };
 
-const App = () => {
+Notification.propTypes = {
+  message: PropTypes.string,
+  type: PropTypes.string.isRequired,
+};
+
+function App() {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
   const [notificationMessage, setNotificationMessage] = useState(null);
-  const [notificationType, setNotificationType] = useState("");
+  const [notificationType, setNotificationType] = useState('');
 
   const newBlogRef = useRef();
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedUser');
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const loggedUser = JSON.parse(loggedUserJSON);
+      setUser(loggedUser);
+      blogService.setToken(loggedUser.token);
     }
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then(returnedBlogs => setBlogs(returnedBlogs));
   }, []);
 
-  const handleLogin = async (event) => {
+  const handleLogin = async event => {
     event.preventDefault();
     try {
-      const user = await loginService.login({
+      const loggingUser = await loginService.login({
         username,
         password,
       });
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      setUser(user);
-      blogService.setToken(user.token);
-      setUsername("");
-      setPassword("");
+      window.localStorage.setItem('loggedUser', JSON.stringify(loggingUser));
+      setUser(loggingUser);
+      blogService.setToken(loggingUser.token);
+      setUsername('');
+      setPassword('');
 
-      setNotificationMessage(`Successful log in by ${user.username}`);
-      setNotificationType("success");
+      setNotificationMessage(`Successful log in by ${loggingUser.username}`);
+      setNotificationType('success');
       setTimeout(() => setNotificationMessage(null), 5000);
     } catch (exception) {
-      setNotificationMessage("Invalid credentials");
-      setNotificationType("error");
+      setNotificationMessage('Invalid credentials');
+      setNotificationType('error');
       setTimeout(() => setNotificationMessage(null), 5000);
     }
   };
 
-  const addBlog = async (newBlog) => {
+  const addBlog = async newBlog => {
     newBlogRef.current.toggleVisibility();
 
     try {
@@ -70,20 +79,20 @@ const App = () => {
       setNotificationMessage(
         `a new blog ${returnedBlog.title} by ${newBlog.author} added`
       );
-      setNotificationType("success");
+      setNotificationType('success');
       setTimeout(() => setNotificationMessage(null), 5000);
     } catch (error) {
       setNotificationMessage(
         `Could not add new blog, got error: ${error.message}`
       );
-      setNotificationType("error");
+      setNotificationType('error');
       setTimeout(() => setNotificationMessage(null), 5000);
     }
   };
 
   const logout = () => {
     setUser(null);
-    window.localStorage.removeItem("loggedUser");
+    window.localStorage.removeItem('loggedUser');
   };
 
   const loginForm = () => (
@@ -111,9 +120,9 @@ const App = () => {
     </div>
   );
 
-  const removeBlog = async (blog) => {
+  const removeBlog = async blog => {
+    // eslint-disable-next-line no-alert
     if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)) {
-      console.log("Removing...");
       await blogService.deleteEntry(blog.id);
       setBlogs(blogs.filter(blogElement => blogElement.id !== blog.id));
     }
@@ -123,10 +132,18 @@ const App = () => {
     <div>
       <h2>Blogs</h2>
       <p>
-        {user.username} logged in<button onClick={logout}>logout</button>
+        {user.username} logged in
+        <button type="button" onClick={logout}>
+          logout
+        </button>
       </p>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} removeBlog={removeBlog} loggedUser={user}/>
+      {blogs.map(blog => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          removeBlog={removeBlog}
+          loggedUser={user}
+        />
       ))}
     </div>
   );
@@ -138,17 +155,16 @@ const App = () => {
         {loginForm()}
       </div>
     );
-  } else {
-    return (
-      <div>
-        <Notification message={notificationMessage} type={notificationType} />
-        {blogList()}
-        <Togglable buttonLabel="new blog" ref={newBlogRef}>
-          <BlogForm createBlog={addBlog} />
-        </Togglable>
-      </div>
-    );
   }
-};
+  return (
+    <div>
+      <Notification message={notificationMessage} type={notificationType} />
+      {blogList()}
+      <Togglable buttonLabel="new blog" ref={newBlogRef}>
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+    </div>
+  );
+}
 
 export default App;
