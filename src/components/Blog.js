@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import blogService from '../services/blogs';
 
-function Blog({ blog, removeBlog, loggedUser }) {
+function Blog({ blog, removeBlog, likeBlog, loggedUser }) {
   const [detailsVisible, setDetailsVisibility] = useState(false);
-  const [likes, setLikes] = useState(blog.likes);
 
   const toggleDetailsVisibility = () => {
     setDetailsVisibility(!detailsVisible);
@@ -14,12 +12,6 @@ function Blog({ blog, removeBlog, loggedUser }) {
   const removeButtonStyle = {
     backgroundColor: '#ff9999',
     display: blog.user.id === loggedUser.id ? '' : 'none',
-  };
-
-  const likeBlog = async () => {
-    const newBlog = { ...blog, likes: likes + 1 };
-    const returnedBlog = await blogService.update(blog.id, newBlog);
-    setLikes(returnedBlog.likes);
   };
 
   return (
@@ -33,8 +25,8 @@ function Blog({ blog, removeBlog, loggedUser }) {
       <div className="blog-details" style={detailsStyle}>
         url: {blog.url}
         <br />
-        likes: {likes}{' '}
-        <button type="button" onClick={likeBlog}>
+        likes: {blog.likes}{' '}
+        <button type="button" onClick={() => likeBlog(blog.id)}>
           like
         </button>
         <br />
@@ -65,6 +57,7 @@ Blog.propTypes = {
     id: PropTypes.string.isRequired,
   }).isRequired,
   removeBlog: PropTypes.func.isRequired,
+  likeBlog: PropTypes.func.isRequired,
   loggedUser: PropTypes.shape({
     id: PropTypes.string.isRequired,
   }).isRequired,

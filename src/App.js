@@ -128,6 +128,17 @@ function App() {
     }
   };
 
+  const likeBlog = async id => {
+    const blog = blogs.find(b => b.id === id);
+    const newBlog = { ...blog, likes: blog.likes + 1 };
+    const returnedBlog = await blogService.update(blog.id, newBlog);
+    setBlogs(
+      blogs.map(blogElement =>
+        blogElement.id !== id ? blogElement : returnedBlog
+      )
+    );
+  };
+
   const blogList = () => (
     <div>
       <h2>Blogs</h2>
@@ -142,6 +153,7 @@ function App() {
           key={blog.id}
           blog={blog}
           removeBlog={removeBlog}
+          likeBlog={likeBlog}
           loggedUser={user}
         />
       ))}
