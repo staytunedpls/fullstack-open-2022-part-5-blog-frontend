@@ -27,14 +27,16 @@ function BlogForm({ createBlog }) {
           title
           <input
             type="text"
+            name="title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
-          />
+          /Await>
         </div>
         <div>
           author
           <input
             type="text"
+            name="author"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
@@ -43,6 +45,7 @@ function BlogForm({ createBlog }) {
           url
           <input
             type="text"
+            name="url"
             value={url}
             onChange={({ target }) => setUrl(target.value)}
           />
