@@ -30,7 +30,7 @@ function BlogForm({ createBlog }) {
             name="title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
-          /Await>
+          />
         </div>
         <div>
           author
