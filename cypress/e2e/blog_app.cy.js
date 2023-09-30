@@ -27,3 +27,29 @@ describe('blog app', () => {
     cy.get('.error').should('have.css', 'color', 'rgb(255, 0, 0)');
   });
 });
+
+describe('when already logged in', () => {
+  beforeEach(function () {
+    cy.request('POST', 'http://localhost:3003/api/testing/reset');
+    const user = {
+      name: 'Test username 1',
+      username: 'Test username 1',
+      password: 'Test password 1',
+    };
+    cy.request('POST', 'http://localhost:3003/api/users/', user);
+    cy.request('POST', 'http://localhost:3003/api/login', {
+      username: 'Test username 1',
+      password: 'Test password 1',
+    }).then(response => {
+      localStorage.setItem('loggedUser', JSON.stringify(response.body));
+    cy.visit('http://localhost:3000');
+    });
+  });
+  it('user can create a new blog', () => {
+    cy.contains('new blog').click();
+    cy.get('input[name=title').type('Test title');
+    cy.get('input[name=author').type('Test author');
+    cy.get('button').contains('create').click();
+    cy.contains('Test title');
+  });
+});
