@@ -109,4 +109,16 @@ describe('when already logged in', () => {
   it('user cannot delete a blog created by any other user', () => {
     cy.get('div.blog').eq(0).contains('remove').should('not.be.visible');
   });
+  it('most liked blog goes first', () => {
+    cy.get('div.blog').eq(0).contains('view').click();
+    cy.get('div.blog').eq(0).contains('like').click();
+    cy.get('div.blog').eq(1).contains('view').click();
+    cy.get('div.blog').eq(1).contains('like').click();
+    cy.get('div.blog').eq(1).contains('likes: 1')
+    cy.get('div.blog').eq(1).contains('like').click();
+    cy.get('div.blog').eq(1).contains('likes: 2')
+    cy.reload()
+    cy.get('div.blog').eq(0).contains('Test title 1')
+
+  })
 });
