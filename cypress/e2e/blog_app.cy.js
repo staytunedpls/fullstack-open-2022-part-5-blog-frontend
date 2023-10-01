@@ -42,7 +42,22 @@ describe('when already logged in', () => {
       password: 'Test password 1',
     }).then(response => {
       localStorage.setItem('loggedUser', JSON.stringify(response.body));
-    cy.visit('http://localhost:3000');
+      cy.request({
+        method: 'POST',
+        url: 'http://localhost:3003/api/blogs/',
+        body: {
+          title: 'Test title 1',
+          author: 'Test author 1',
+          url: 'url',
+          user: `${JSON.stringify(localStorage.getItem('loggedUser')._id)}`,
+        },
+        headers: {
+          Authorization: `bearer ${
+            JSON.parse(localStorage.getItem('loggedUser')).token
+          }`,
+        },
+      });
+      cy.visit('http://localhost:3000');
     });
   });
   it('user can create a new blog', () => {
@@ -51,5 +66,11 @@ describe('when already logged in', () => {
     cy.get('input[name=author').type('Test author');
     cy.get('button').contains('create').click();
     cy.contains('Test title');
+  });
+  it('user can like a blog', () => {
+    cy.get('button').contains('view').click();
+    cy.get('button').contains('like').click();
+    cy.contains('likes: 1');
+    cy.contains('likes: 0').should('not.exist');
   });
 });
