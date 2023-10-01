@@ -73,4 +73,10 @@ describe('when already logged in', () => {
     cy.contains('likes: 1');
     cy.contains('likes: 0').should('not.exist');
   });
+  it.only('user can delete a blog', () => {
+    cy.contains('Test title 1').should('exist')
+    cy.get('button').contains('view').click();
+    cy.get('button').contains('remove').click();
+    cy.contains('Test title 1').should('not.exist')
+  });
 });
