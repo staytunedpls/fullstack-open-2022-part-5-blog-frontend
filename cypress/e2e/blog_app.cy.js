@@ -106,7 +106,7 @@ describe('when already logged in', () => {
     cy.get('div.blog').eq(1).contains('remove').click();
     cy.contains('Test title 1').should('not.exist')
   });
-  it('user cannot delete a blog created by other user', () => {
+  it('user cannot delete a blog created by any other user', () => {
     cy.get('div.blog').eq(0).contains('remove').should('not.be.visible');
   });
 });
