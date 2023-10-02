@@ -11,7 +11,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier", "cypress"],
+  "plugins": ["react", "prettier", "cypress", "jest"],
   "rules": {
     "prettier/prettier": "error",
     // suppress errors for missing 'import React' in files
